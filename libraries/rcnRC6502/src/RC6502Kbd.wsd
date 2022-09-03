@@ -1,0 +1,14 @@
+@startuml
+
+left to right direction
+
+[*] --> __RC6502KbdStIdle
+__RC6502KbdStIdle -> __RC6502KbdStIdle : kbd._isBufferEmpty()
+__RC6502KbdStIdle -> __RC6502KbdStWrite : !kbd._isBufferEmpty()
+__RC6502KbdStWrite -> __RC6502KbdStWaitInt
+__RC6502KbdStWaitInt -> __RC6502KbdStWaitInt : !kbd.intterupt_
+__RC6502KbdStWaitInt -> __RC6502KbdStPollClear : kbd.intterupt_
+__RC6502KbdStPollClear -> __RC6502KbdStPollClear : digitalRead(PIN_KBD_CLR) != LOW
+__RC6502KbdStPollClear --> __RC6502KbdStIdle : digitalRead(PIN_KBD_CLR) == LOW
+
+@enduml
