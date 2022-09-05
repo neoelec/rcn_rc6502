@@ -10,7 +10,7 @@ void RC6502PioClass::begin(void)
 {
   dev_.begin();
   __beginCommon();
-  rc6502MenuBegin(dev_);
+  RC6502Menu.begin(dev_);
   state_ = &st_keyboard_;
 
   Serial.println(F("  - Ctrl+R - Racccoon's Menu"));
@@ -77,14 +77,14 @@ void __RC6002StateKbd::handle(RC6502PioClass &pio)
 
 void __RC6002StateMenuEnter::handle(RC6502PioClass &pio)
 {
-  rcn6502MenuEnter();
+  RC6502Menu.enter();
   __flushTtyRx();
   pio.state_ = &pio.st_menu_run_;
 }
 
 void __RC6002StateMenuRun::handle(RC6502PioClass &pio)
 {
-  if (!rcn6502MenuRun())
+  if (!RC6502Menu.run())
   {
     __flushTtyRx();
     pio.state_ = &pio.st_keyboard_;

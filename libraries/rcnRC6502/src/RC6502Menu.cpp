@@ -4,7 +4,7 @@
 
 #include "rcnRC6502.h"
 
-static RC6502MenuClass RC6502Menu;
+RC6502MenuClass RC6502Menu;
 
 RC6502MenuClass::RC6502MenuClass()
 {
@@ -16,9 +16,11 @@ void RC6502MenuClass::begin(RC6502Dev &dev)
   kbd_ = dev.getKbd();
   sd_ = dev.getSd();
   video_ = dev.getVideo();
+
+  __initializeMenuCmd();
 }
 
-void RC6502MenuClass::enterMenu(void)
+void RC6502MenuClass::enter(void)
 {
   Serial.println();
   Serial.print(F("RCN: Entering to menu ..."));
@@ -39,10 +41,25 @@ void RC6502MenuClass::enterMenu(void)
   menu_cmd_.giveCmdPrompt();
 }
 
+bool RC6502MenuClass::run(void)
+{
+  uint8_t cmd;
+
+  if (isDone())
+    return false;
+
+  cmd = menu_cmd_.UserRequest();
+  if (cmd)
+    menu_cmd_.ExeCommand(cmd);
+
+  return true;
+}
+
 SerialMenuCmd *RC6502MenuClass::getMenuCmd(void)
 {
   return &menu_cmd_;
 }
+
 void RC6502MenuClass::doCmdHelp(void)
 {
   menu_cmd_.ShowMenu();
@@ -246,41 +263,8 @@ inline void RC6502MenuClass::__printSpaces(size_t n)
     Serial.write(' ');
 }
 
-// --
-
-static void __initializeMenuCmd(void);
-
-void rc6502MenuBegin(RC6502Dev &dev)
+void RC6502MenuClass::__initializeMenuCmd(void)
 {
-  RC6502Menu.begin(dev);
-  __initializeMenuCmd();
-}
-
-void rcn6502MenuEnter(void)
-{
-  RC6502Menu.enterMenu();
-}
-
-bool rcn6502MenuRun(void)
-{
-  SerialMenuCmd *menu_cmd;
-  uint8_t cmd;
-
-  if (RC6502Menu.isDone())
-    return false;
-
-  menu_cmd = RC6502Menu.getMenuCmd();
-
-  cmd = menu_cmd->UserRequest();
-  if (cmd)
-    menu_cmd->ExeCommand(cmd);
-
-  return true;
-}
-
-static void __initializeMenuCmd(void)
-{
-  SerialMenuCmd *menu_cmd = RC6502Menu.getMenuCmd();
   static tMenuCmdTxt prompt[] PROGMEM = "-";
   static tMenuCmdTxt txt_l[] PROGMEM = "l - List Programs";
   static tMenuCmdTxt txt_o[] PROGMEM = "o - Load Program";
@@ -299,10 +283,10 @@ static void __initializeMenuCmd(void)
       {txt__, '?', []()
        { RC6502Menu.doCmdHelp(); }}};
 
-  if (menu_cmd->getNbCmds() > 0)
+  if (menu_cmd_.getNbCmds() > 0)
     return;
 
-  if (!menu_cmd->begin(menu_list, ARRAY_SIZE(menu_list), prompt))
+  if (!menu_cmd_.begin(menu_list, ARRAY_SIZE(menu_list), prompt))
   {
     Serial.println(F("RCN: MENU Failed"));
     while (1)

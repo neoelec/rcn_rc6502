@@ -9,16 +9,13 @@
 #include "RC6502Sd.h"
 #include "RC6502Video.h"
 
-extern void rc6502MenuBegin(RC6502Dev &dev);
-extern void rcn6502MenuEnter(void);
-extern bool rcn6502MenuRun(void);
-
 class RC6502MenuClass
 {
 public:
   RC6502MenuClass();
   void begin(RC6502Dev &dev);
-  void enterMenu(void);
+  void enter(void);
+  bool run(void);
   SerialMenuCmd *getMenuCmd(void);
   void doCmdHelp(void);
   void doCmdExit(void);
@@ -34,6 +31,7 @@ private:
   void ____loadPgmFile(void);
   void __openPgmFile(void);
   inline void __printSpaces(size_t n);
+  void __initializeMenuCmd(void);
 
 private:
   SerialMenuCmd menu_cmd_;
@@ -45,5 +43,7 @@ private:
   size_t nr_programs_;
   RC6502Pgm pgm_;
 };
+
+extern RC6502MenuClass RC6502Menu;
 
 #endif // __RC6502MENU_H__
