@@ -26,7 +26,7 @@ void RC6502PioClass::beginClassic(void)
 
 void RC6502PioClass::run(void)
 {
-  state_->handle(*this);
+  state_->handle(this);
 }
 
 void RC6502PioClass::__beginCommon(void)
@@ -41,10 +41,10 @@ void RC6502PioClass::__beginCommon(void)
 
 // states
 
-void __RC6002StateClassic::handle(RC6502PioClass &pio)
+void __RC6002StateClassic::handle(RC6502PioClass *pio)
 {
-  RC6502Kbd *kbd = pio.kbd_;
-  RC6502Video *video = pio.video_;
+  RC6502Kbd *kbd = pio->kbd_;
+  RC6502Video *video = pio->video_;
 
   while (Serial.available() && !kbd->isBufferFull())
     kbd->pushToBuffer(Serial.read());
@@ -53,10 +53,10 @@ void __RC6002StateClassic::handle(RC6502PioClass &pio)
   video->run();
 }
 
-void __RC6002StateKbd::handle(RC6502PioClass &pio)
+void __RC6002StateKbd::handle(RC6502PioClass *pio)
 {
-  RC6502Kbd *kbd = pio.kbd_;
-  RC6502Video *video = pio.video_;
+  RC6502Kbd *kbd = pio->kbd_;
+  RC6502Video *video = pio->video_;
 
   while (Serial.available() && !kbd->isBufferFull())
   {
@@ -64,7 +64,7 @@ void __RC6002StateKbd::handle(RC6502PioClass &pio)
 
     if (c == KEY_CODE_RS)
     {
-      pio.state_ = &pio.st_menu_enter_;
+      pio->state_ = &pio->st_menu_enter_;
       break;
     }
 
@@ -75,19 +75,19 @@ void __RC6002StateKbd::handle(RC6502PioClass &pio)
   video->run();
 }
 
-void __RC6002StateMenuEnter::handle(RC6502PioClass &pio)
+void __RC6002StateMenuEnter::handle(RC6502PioClass *pio)
 {
   RC6502Menu.enter();
   __flushTtyRx();
-  pio.state_ = &pio.st_menu_run_;
+  pio->state_ = &pio->st_menu_run_;
 }
 
-void __RC6002StateMenuRun::handle(RC6502PioClass &pio)
+void __RC6002StateMenuRun::handle(RC6502PioClass *pio)
 {
   if (!RC6502Menu.run())
   {
     __flushTtyRx();
-    pio.state_ = &pio.st_keyboard_;
+    pio->state_ = &pio->st_keyboard_;
   }
 }
 

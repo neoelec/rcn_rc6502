@@ -10,7 +10,7 @@ extern RC6502PioClass RC6502Pio;
 class __RC6502State
 {
 public:
-  virtual void handle(RC6502PioClass &pio) = 0;
+  virtual void handle(RC6502PioClass *pio) = 0;
 
 protected:
   void __flushTtyRx(void);
@@ -19,25 +19,25 @@ protected:
 class __RC6002StateClassic : public __RC6502State
 {
 public:
-  void handle(RC6502PioClass &pio);
+  void handle(RC6502PioClass *pio);
 };
 
 class __RC6002StateKbd : public __RC6502State
 {
 public:
-  void handle(RC6502PioClass &pio);
+  void handle(RC6502PioClass *pio);
 };
 
 class __RC6002StateMenuEnter : public __RC6502State
 {
 public:
-  void handle(RC6502PioClass &pio);
+  void handle(RC6502PioClass *pio);
 };
 
 class __RC6002StateMenuRun : public __RC6502State
 {
 public:
-  void handle(RC6502PioClass &pio);
+  void handle(RC6502PioClass *pio);
 };
 
 class RC6502PioClass

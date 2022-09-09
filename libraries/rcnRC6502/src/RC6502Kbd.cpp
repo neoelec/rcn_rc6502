@@ -28,7 +28,7 @@ void RC6502Kbd::begin(Adafruit_MCP23X17 *mcp)
 
 void RC6502Kbd::run(void)
 {
-  state_->handle(*this);
+  state_->handle(this);
 }
 
 void RC6502Kbd::setInterrupt(void)
@@ -83,40 +83,40 @@ void RC6502Kbd::__beginPin(void)
 
 // states
 
-void __RC6502KbdStIdle::handle(RC6502Kbd &kbd)
+void __RC6502KbdStIdle::handle(RC6502Kbd *kbd)
 {
-  if (kbd.isBufferEmpty())
+  if (kbd->isBufferEmpty())
     return;
 
-  kbd.state_ = &kbd.st_write_;
+  kbd->state_ = &kbd->st_write_;
 }
 
-void __RC6502KbdStPollClear::handle(RC6502Kbd &kbd)
+void __RC6502KbdStPollClear::handle(RC6502Kbd *kbd)
 {
   if (digitalRead(PIN_KBD_CLR) != LOW)
     return;
 
-  kbd.state_ = &kbd.st_idle_;
+  kbd->state_ = &kbd->st_idle_;
 }
 
-void __RC6502KbdStWrite::handle(RC6502Kbd &kbd)
+void __RC6502KbdStWrite::handle(RC6502Kbd *kbd)
 {
-  int c = kbd.popFromBuffer();
-  Adafruit_MCP23X17 *mcp = kbd.mcp_;
+  int c = kbd->popFromBuffer();
+  Adafruit_MCP23X17 *mcp = kbd->mcp_;
 
   mcp->writeGPIOB(c | 0x80);
   digitalWrite(PIN_KBD_STR, HIGH);
 
-  kbd.state_ = &kbd.st_wait_int_;
+  kbd->state_ = &kbd->st_wait_int_;
 }
 
-void __RC6502KbdStWaitInt::handle(RC6502Kbd &kbd)
+void __RC6502KbdStWaitInt::handle(RC6502Kbd *kbd)
 {
-  if (!kbd.interrupt_)
+  if (!kbd->interrupt_)
     return;
 
   digitalWrite(PIN_KBD_STR, LOW);
 
-  kbd.interrupt_ = false;
-  kbd.state_ = &kbd.st_poll_clear_;
+  kbd->interrupt_ = false;
+  kbd->state_ = &kbd->st_poll_clear_;
 }

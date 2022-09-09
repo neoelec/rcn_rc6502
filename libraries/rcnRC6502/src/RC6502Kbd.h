@@ -11,31 +11,31 @@ class RC6502Kbd;
 class __RC6502KbdState
 {
 public:
-  virtual void handle(RC6502Kbd &kbd) = 0;
+  virtual void handle(RC6502Kbd *kbd) = 0;
 };
 
 class __RC6502KbdStIdle : public __RC6502KbdState
 {
 public:
-  void handle(RC6502Kbd &kbd);
+  void handle(RC6502Kbd *kbd);
 };
 
 class __RC6502KbdStPollClear : public __RC6502KbdState
 {
 public:
-  void handle(RC6502Kbd &kbd);
+  void handle(RC6502Kbd *kbd);
 };
 
 class __RC6502KbdStWaitInt : public __RC6502KbdState
 {
 public:
-  void handle(RC6502Kbd &kbd);
+  void handle(RC6502Kbd *kbd);
 };
 
 class __RC6502KbdStWrite : public __RC6502KbdState
 {
 public:
-  void handle(RC6502Kbd &kbd);
+  void handle(RC6502Kbd *kbd);
 };
 
 class RC6502Kbd
