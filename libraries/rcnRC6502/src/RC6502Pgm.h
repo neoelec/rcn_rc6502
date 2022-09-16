@@ -25,7 +25,6 @@ public:
   const char *getPgmFile(void);
   uint16_t getLoadAddress(void);
   uint16_t getRunAddress(void);
-  uint8_t getNrPrograms(void);
   void printProgram(void);
 
 private:
@@ -33,7 +32,6 @@ private:
   bool __readCsv(char *csv, const char *csv_name);
   void __parseCsv(char *csv);
   void __parseToken(char *toeke, uint8_t i);
-  void __initNrProgram(void);
   bool __beginPgmNumber(uint16_t pgm_number);
   bool __beginCsvName(const char *csv_name);
   void __updateCsvName(char *csv_name, uint16_t pgm_number);
@@ -41,7 +39,6 @@ private:
 
 private:
   RC6502Sd *sd_;
-  uint8_t nr_programs_;
 
   char description_[24];
   uint8_t type_;

@@ -12,7 +12,6 @@
 class RC6502MenuClass
 {
 public:
-  RC6502MenuClass();
   void begin(RC6502Dev &dev);
   void enter(void);
   bool run(void);
@@ -42,7 +41,6 @@ private:
   RC6502Video *video_;
 
   bool done_;
-  size_t nr_programs_;
   RC6502Pgm pgm_;
 };
 

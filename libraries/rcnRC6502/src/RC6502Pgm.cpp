@@ -12,7 +12,6 @@
 bool RC6502Pgm::begin(RC6502Sd *sd)
 {
   sd_ = sd;
-  __initNrProgram();
 
   return __beginPgmNumber(0);
 }
@@ -65,11 +64,6 @@ uint16_t RC6502Pgm::getLoadAddress(void)
 uint16_t RC6502Pgm::getRunAddress(void)
 {
   return run_address_;
-}
-
-uint8_t RC6502Pgm::getNrPrograms(void)
-{
-  return nr_programs_;
 }
 
 void RC6502Pgm::printProgram(void)
@@ -195,23 +189,6 @@ void RC6502Pgm::__parseToken(char *token, uint8_t i)
     tmp = strtol(token, NULL, 16);
     run_address_ = static_cast<uint16_t>(tmp & 0xFFFF);
     break;
-  }
-}
-
-void RC6502Pgm::__initNrProgram(void)
-{
-  char csv_name[] = CSV_NAME_FMT;
-
-  nr_programs_ = 0;
-
-  for (uint16_t pgm_number = 0; pgm_number < PGM_NUMBER_MAX; pgm_number++)
-  {
-    __updateCsvName(csv_name, pgm_number);
-
-    if (!__openCsv(csv_name))
-      break;
-
-    nr_programs_++;
   }
 }
 

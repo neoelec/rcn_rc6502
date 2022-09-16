@@ -4,11 +4,6 @@
 
 RC6502MenuClass RC6502Menu;
 
-RC6502MenuClass::RC6502MenuClass()
-{
-  nr_programs_ = 0;
-}
-
 void RC6502MenuClass::begin(RC6502Dev &dev)
 {
   clock_ = dev.getClock();
@@ -27,14 +22,7 @@ void RC6502MenuClass::enter(void)
   done_ = false;
 
   sd_->mount();
-  if (nr_programs_ == 0)
-  {
-    Serial.println();
-    Serial.print(F("RCN: 1st run. Building a table of contents..."));
-
-    pgm_.begin(sd_);
-    nr_programs_ = pgm_.getNrPrograms();
-  }
+  pgm_.begin(sd_);
 
   menu_cmd_.ShowMenu();
   menu_cmd_.giveCmdPrompt();
@@ -78,24 +66,20 @@ void RC6502MenuClass::doCmdListPrograms(void)
 {
   String str_bm;
   const uint16_t pgm_per_page = 20;
-  uint16_t nr_pages = nr_programs_ / pgm_per_page + 1;
   long page_number;
 
   Serial.println();
-  Serial.print(F("RCN: PAGE NUMBER [0-"));
-  Serial.print(nr_pages - 1, DEC);
-  Serial.print(F("]"));
+  Serial.print(F("RCN: PAGE NUMBER [>=0]"));
   if (!menu_cmd_.getStrValue(str_bm) || !str_bm.length())
     goto __exit;
 
   page_number = str_bm.toInt();
-  if (page_number < 0 || page_number >= nr_pages)
+  if (page_number < 0)
   {
     Serial.println();
     Serial.print(F("Wrong Value "));
     Serial.print(page_number, DEC);
-    Serial.print(F(". It should be 0 <= page_number <= "));
-    Serial.println(nr_pages - 1, DEC);
+    Serial.println(F(". It should be page_number >= 0"));
     goto __exit;
   }
 
@@ -111,20 +95,17 @@ void RC6502MenuClass::doCmdLoadProgram(void)
   long pgm_number;
 
   Serial.println();
-  Serial.print(F("RCN: PROGRAM NUMBER [0-"));
-  Serial.print(nr_programs_ - 1, DEC);
-  Serial.print(F("]"));
+  Serial.print(F("RCN: PROGRAM NUMBER [>=0]"));
   if (!menu_cmd_.getStrValue(str_bm) || !str_bm.length())
     goto __exit;
 
   pgm_number = str_bm.toInt();
-  if (pgm_number < 0 || pgm_number >= nr_programs_)
+  if (pgm_number < 0)
   {
     Serial.println();
     Serial.print(F("Wrong Value "));
     Serial.print(pgm_number, DEC);
-    Serial.print(F(". It should be 0 <= boot_mode <= "));
-    Serial.println(nr_programs_ - 1, DEC);
+    Serial.println(F(". It should be boot_mode  >= 0"));
     goto __exit;
   }
 
