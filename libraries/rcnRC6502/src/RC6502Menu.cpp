@@ -77,30 +77,32 @@ void RC6502MenuClass::doCmdExit(void)
 
 void RC6502MenuClass::doCmdListPrograms(void)
 {
-  RC6502Pgm pgm_tmp;
-  size_t n;
+  String str_bm;
+  const uint16_t pgm_per_page = 20;
+  uint16_t nr_pages = nr_programs_ / pgm_per_page + 1;
+  long page_number;
 
   Serial.println();
+  Serial.print(F("RCN: PAGE NUMBER [0-"));
+  Serial.print(nr_pages - 1, DEC);
+  Serial.print(F("]"));
+  if (!menu_cmd_.getStrValue(str_bm) || !str_bm.length())
+    goto __exit;
 
-  for (uint16_t i = 0; i < nr_programs_; i++)
+  page_number = str_bm.toInt();
+  if (page_number < 0 || page_number >= nr_pages)
   {
-    pgm_tmp.begin(sd_, i);
-    n = Serial.print(i, DEC);
-    Serial.print(F("."));
-    __printSpaces(4 - n);
-
-    n = Serial.print(pgm_tmp.getDescription());
-    Serial.print(F(" ("));
-    n += Serial.print(pgm_tmp.getTypeT());
-    Serial.print(F(")"));
-
-    if (i % 2)
-      Serial.println();
-    else
-      __printSpaces(30 - n);
+    Serial.println();
+    Serial.print(F("Wrong Value "));
+    Serial.print(page_number, DEC);
+    Serial.print(F(". It should be 0 <= page_number <= "));
+    Serial.println(nr_pages - 1, DEC);
+    goto __exit;
   }
 
-  Serial.println();
+  __listPrograms(page_number, pgm_per_page);
+
+__exit:
   menu_cmd_.giveCmdPrompt();
 }
 
@@ -292,4 +294,32 @@ void RC6502MenuClass::__initializeMenuCmd(void)
     while (1)
       ;
   }
+}
+
+void RC6502MenuClass::__listPrograms(uint16_t page_number, uint16_t pgm_per_page)
+{
+  RC6502Pgm pgm_tmp;
+  uint16_t pgm_begin = page_number * pgm_per_page;
+  Serial.println();
+  size_t n;
+
+  for (uint16_t i = 0; i < pgm_per_page; i++)
+  {
+    uint16_t pgm_number = i + pgm_begin;
+
+    if (!pgm_tmp.begin(sd_, pgm_number))
+      break;
+
+    n = Serial.print(pgm_number, DEC);
+    Serial.print(F("."));
+    __printSpaces(4 - n);
+
+    n = Serial.print(pgm_tmp.getDescription());
+    __printSpaces(26 - n);
+    Serial.print(F(" ("));
+    Serial.print(pgm_tmp.getTypeT());
+    Serial.println(F(")"));
+  }
+
+  Serial.println();
 }

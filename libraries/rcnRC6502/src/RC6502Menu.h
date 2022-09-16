@@ -32,6 +32,7 @@ private:
   void __openPgmFile(void);
   inline void __printSpaces(size_t n);
   void __initializeMenuCmd(void);
+  void __listPrograms(uint16_t page_number, uint16_t pgm_per_page);
 
 private:
   SerialMenuCmd menu_cmd_;
