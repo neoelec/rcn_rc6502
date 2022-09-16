@@ -36,6 +36,7 @@ private:
 
 private:
   SerialMenuCmd menu_cmd_;
+  RC6502Clock *clock_;
   RC6502Kbd *kbd_;
   RC6502Sd *sd_;
   RC6502Video *video_;

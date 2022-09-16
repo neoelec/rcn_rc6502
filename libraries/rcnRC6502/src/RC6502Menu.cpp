@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <avr/wdt.h>
-
 #include "rcnRC6502.h"
 
 RC6502MenuClass RC6502Menu;
@@ -13,6 +11,7 @@ RC6502MenuClass::RC6502MenuClass()
 
 void RC6502MenuClass::begin(RC6502Dev &dev)
 {
+  clock_ = dev.getClock();
   kbd_ = dev.getKbd();
   sd_ = dev.getSd();
   video_ = dev.getVideo();
@@ -140,7 +139,8 @@ void RC6502MenuClass::doCmdWarmReset(void)
 {
   Serial.println();
   Serial.println(F("RCN: Warm reset ..."));
-  wdt_enable(WDTO_15MS);
+  clock_->reset();
+  done_ = true;
 }
 
 bool RC6502MenuClass::isDone(void)
