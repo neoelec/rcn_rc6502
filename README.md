@@ -29,11 +29,19 @@ void setup(void)
 
 ## HW Modification
 - Remove 'X14' - 1MHz Clock Oscillator
-- Short or Connect using a small register (10Ohm is used) between 'PIN 6' and 'PIN 9' of Arduino.
+  - Install 'Micro-SD Slot' and 'Level Shifter' at here.
+- Short or Connect using a small register (10Ohm is used) between 'CLOCK' and 'PIN 9' of Arduino.
+- Connect 'PIN 8' of Arduino to 'RESET'.
 - Connect Micro-SD card module uisng a 'SPI' interface.
   - 'PIN 7' is used for 'CS'
 - Pictures
-  - WIP...
+![20220916_210743](./images/20220916_210743.jpg)
+
+![20220916_210821](./images/20220916_210821.jpg)
+
+![20220916_210836](./images/20220916_210836.jpg)
+
+![20220916_210955](./images/20220916_210955.jpg)
 
 ## Screenshots
 ![RC6502-00](./images/rc6502-00.png)
