@@ -42,6 +42,7 @@ class RC6502Kbd
 {
 public:
   void begin(Adafruit_MCP23X17 *mcp);
+  void reset(void);
   bool isBufferEmpty(void);
   bool isBufferFull(void);
   int popFromBuffer(void);

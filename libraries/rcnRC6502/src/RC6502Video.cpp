@@ -22,6 +22,12 @@ void RC6502Video::begin(Adafruit_MCP23X17 *mcp)
   __beginPin();
 }
 
+void RC6502Video::reset(void)
+{
+  __beginMcp();
+  __beginPin();
+}
+
 void RC6502Video::run(void)
 {
   digitalWrite(PIN_VIDEO_nRDA, HIGH);

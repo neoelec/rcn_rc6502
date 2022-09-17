@@ -121,6 +121,9 @@ void RC6502MenuClass::doCmdWarmReset(void)
   Serial.println();
   Serial.println(F("RCN: Warm reset ..."));
   clock_->reset();
+  kbd_->reset();
+  video_->reset();
+  Serial.flush();
   done_ = true;
 }
 

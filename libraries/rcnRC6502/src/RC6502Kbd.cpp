@@ -22,6 +22,11 @@ void RC6502Kbd::begin(Adafruit_MCP23X17 *mcp)
   state_ = &st_idle_;
   serial_buf_.clear();
 
+  reset();
+}
+
+void RC6502Kbd::reset(void)
+{
   __beginMcp();
   __beginPin();
 }
