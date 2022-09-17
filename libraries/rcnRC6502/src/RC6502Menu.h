@@ -20,6 +20,7 @@ public:
   void doCmdExit(void);
   void doCmdListPrograms(void);
   void doCmdLoadProgram(void);
+  void doCmdPIOReset(void);
   void doCmdWarmReset(void);
   bool isDone(void);
 

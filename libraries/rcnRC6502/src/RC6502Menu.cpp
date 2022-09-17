@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include <avr/wdt.h>
+
 #include "rcnRC6502.h"
 
 RC6502MenuClass RC6502Menu;
@@ -114,6 +116,13 @@ void RC6502MenuClass::doCmdLoadProgram(void)
 
 __exit:
   menu_cmd_.giveCmdPrompt();
+}
+
+void RC6502MenuClass::doCmdPIOReset(void)
+{
+  Serial.println();
+  Serial.println(F("RCN: PIO reset ..."));
+  wdt_enable(WDTO_15MS);
 }
 
 void RC6502MenuClass::doCmdWarmReset(void)
@@ -255,6 +264,7 @@ void RC6502MenuClass::__initializeMenuCmd(void)
   static tMenuCmdTxt txt_l[] PROGMEM = "l - List Programs";
   static tMenuCmdTxt txt_o[] PROGMEM = "o - Load Program";
   static tMenuCmdTxt txt_x[] PROGMEM = "x - Exit";
+  static tMenuCmdTxt txt_p[] PROGMEM = "p - PIO Reset";
   static tMenuCmdTxt txt_w[] PROGMEM = "w - Warm Reset";
   static tMenuCmdTxt txt__[] PROGMEM = "? - Help";
   static stMenuCmd menu_list[] = {
@@ -264,6 +274,8 @@ void RC6502MenuClass::__initializeMenuCmd(void)
        { RC6502Menu.doCmdLoadProgram(); }},
       {txt_x, 'x', []()
        { RC6502Menu.doCmdExit(); }},
+      {txt_p, 'p', []()
+       { RC6502Menu.doCmdPIOReset(); }},
       {txt_w, 'w', []()
        { RC6502Menu.doCmdWarmReset(); }},
       {txt__, '?', []()
