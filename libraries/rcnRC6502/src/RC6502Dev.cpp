@@ -9,8 +9,8 @@ static RC6502Kbd *kbd; // only for interrupt handler;
 
 void RC6502Dev::begin(void)
 {
-  __beginSd();
   beginNoSd();
+  __beginSd();
 }
 
 void RC6502Dev::beginNoSd(void)
