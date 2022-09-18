@@ -18,7 +18,7 @@ void RC6502Dev::beginNoSd(void)
   __beginPin();
   __beginTty();
   __beginMcp();
-  __beginKbd(); // NOTE: must be in the end of '__beginFOO'
+  __beginKbd();
 
   clock_.begin();
   video_.begin(&mcp_);
