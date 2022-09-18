@@ -82,7 +82,6 @@ void RC6502Dev::__beginPin(void)
 void RC6502Dev::__beginSd(void)
 {
   sd_.begin(PIN_SD_nSS);
-  Serial.println();
 }
 
 void RC6502Dev::__beginTty(void)
@@ -91,5 +90,4 @@ void RC6502Dev::__beginTty(void)
 
   Serial.print(F("\033[2J")); // clear screen
   Serial.println(F("RC6502 Apple 1 Replica - Raccoon's Mod"));
-  Serial.println();
 }

@@ -14,7 +14,6 @@ void RC6502PioClass::begin(void)
   state_ = &st_keyboard_;
 
   Serial.println(F("  - Ctrl+R - Racccoon's Menu"));
-  Serial.println();
 }
 
 void RC6502PioClass::beginClassic(void)
