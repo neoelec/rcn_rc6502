@@ -30,7 +30,7 @@ uint8_t RC6502Sd::mount(void)
 
   error = PFF3a.begin(&fatfs_, pin_ss_);
 
-  return static_cast<uint8_t>(error & 0xFF);
+  return static_cast<uint8_t>(error);
 }
 
 uint8_t RC6502Sd::open(const char *file_name)
@@ -39,7 +39,7 @@ uint8_t RC6502Sd::open(const char *file_name)
 
   error = PFF3a.open(file_name);
 
-  return static_cast<uint8_t>(error & 0xFF);
+  return static_cast<uint8_t>(error);
 }
 
 void RC6502Sd::printError(uint8_t error, uint8_t operation, const char *file_name)
