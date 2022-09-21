@@ -91,9 +91,7 @@ void RC6502Pgm::printProgram(void)
 bool RC6502Pgm::__openCsv(const char *csv_name)
 {
   uint8_t error;
-  uint8_t operation;
 
-  operation = RC6502Sd::OPEN;
   error = sd_->open(csv_name);
   if (error == FR_NO_FILE)
     return false;
@@ -101,36 +99,26 @@ bool RC6502Pgm::__openCsv(const char *csv_name)
   if (error == FR_OK)
     return true;
 
-  sd_->printError(error, operation, csv_name);
+  sd_->printError(error, RC6502Sd::OPEN, csv_name);
   while (1)
     ;
 
   return false;
 }
 
-bool RC6502Pgm::__readCsv(char *csv, const char *csv_name)
+bool RC6502Pgm::__readCsv(char *csv, uint8_t sz_csv, const char *csv_name)
 {
-  char buf[SZ_BUF];
   uint8_t error;
-  uint8_t operation;
   uint8_t sz_read;
-  size_t pos = 0;
 
-  operation = RC6502Sd::READ;
-  do
-  {
-    error = sd_->read(buf, sizeof(buf), sz_read);
-    if (error != FR_OK)
-      goto __hang_on_error;
-
-    memcpy(&csv[pos], buf, sz_read);
-    pos += sz_read;
-  } while (sz_read == sizeof(buf));
+  error = sd_->read(csv, sz_csv, sz_read);
+  if (error != FR_OK)
+    goto __hang_on_error;
 
   return true;
 
 __hang_on_error:
-  sd_->printError(error, operation, csv_name);
+  sd_->printError(error, RC6502Sd::READ, csv_name);
   while (1)
     ;
 
@@ -183,18 +171,18 @@ void RC6502Pgm::__parseToken(char *token, uint8_t i)
     break;
   case 3: // load_address_
     tmp = strtol(token, NULL, 16);
-    load_address_ = static_cast<uint16_t>(tmp & 0xFFFF);
+    load_address_ = static_cast<uint16_t>(tmp);
     break;
   case 4: // run_address_
     tmp = strtol(token, NULL, 16);
-    run_address_ = static_cast<uint16_t>(tmp & 0xFFFF);
+    run_address_ = static_cast<uint16_t>(tmp);
     break;
   }
 }
 
 bool RC6502Pgm::__beginPgmNumber(uint16_t pgm_number)
 {
-  char csv_name[] = CSV_NAME_FMT;
+  static char csv_name[] = CSV_NAME_FMT;
 
   __updateCsvName(csv_name, pgm_number);
 
@@ -209,7 +197,7 @@ bool RC6502Pgm::__beginCsvName(const char *csv_name)
   if (!is_ok)
     return is_ok;
 
-  is_ok = __readCsv(csv, csv_name);
+  is_ok = __readCsv(csv, sizeof(csv), csv_name);
   if (is_ok)
     __parseCsv(csv);
 

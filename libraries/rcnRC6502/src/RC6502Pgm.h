@@ -29,7 +29,7 @@ public:
 
 private:
   bool __openCsv(const char *csv_name);
-  bool __readCsv(char *csv, const char *csv_name);
+  bool __readCsv(char *csv, uint8_t sz_csv, const char *csv_name);
   void __parseCsv(char *csv);
   void __parseToken(char *toeke, uint8_t i);
   bool __beginPgmNumber(uint16_t pgm_number);
