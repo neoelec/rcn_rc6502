@@ -12,10 +12,11 @@ void RC6502Sd::begin(uint8_t pin_ss)
 
   do
   {
-    uint8_t i = 5;
+    uint8_t i = 25;
     do
     {
       error = PFF3a.begin(&fatfs_, pin_ss_);
+      delay(1);
     } while (--i && (error != FR_OK));
     printError(error, MOUNT);
 
