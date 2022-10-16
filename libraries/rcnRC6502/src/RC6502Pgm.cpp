@@ -217,5 +217,5 @@ void RC6502Pgm::__updateCsvName(char *csv_name, uint8_t dir_number, uint16_t pgm
 inline void RC6502Pgm::__printSpaces(size_t n)
 {
   for (size_t i = 0; i < n; i++)
-    Serial.write(' ');
+    Serial.print(F(" "));
 }

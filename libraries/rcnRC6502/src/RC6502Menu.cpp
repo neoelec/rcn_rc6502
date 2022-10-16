@@ -143,6 +143,7 @@ void RC6502MenuClass::doCmdSelectDirectory(void)
   Serial.println();
   Serial.print(F("RCN: DIRECTORY - "));
   Serial.println(dir_number_, DEC);
+  Serial.println();
 
 __exit:
   menu_cmd_.giveCmdPrompt();
@@ -285,7 +286,7 @@ __remount:
 inline void RC6502MenuClass::__printSpaces(size_t n)
 {
   for (size_t i = 0; i < n; i++)
-    Serial.write(' ');
+    Serial.print(F(" "));
 }
 
 void RC6502MenuClass::__initializeMenuCmd(void)
