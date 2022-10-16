@@ -7,21 +7,21 @@
 #define SZ_BUF 32
 #define SZ_CSV_BUF (SZ_BUF * 3)
 
-#define CSV_NAME_FMT "PGMxxx.CSV"
+#define CSV_NAME_FMT "yy/PGMxxx.CSV"
 
 bool RC6502Pgm::begin(RC6502Sd *sd)
 {
   sd_ = sd;
 
-  return __beginPgmNumber(0);
+  return __beginPgmNumber(0, 0);
 }
 
-bool RC6502Pgm::begin(RC6502Sd *sd, uint16_t pgm_number)
+bool RC6502Pgm::begin(RC6502Sd *sd, uint8_t dir_number, uint16_t pgm_number)
 {
   bool is_ok;
 
   sd_ = sd;
-  is_ok = __beginPgmNumber(pgm_number);
+  is_ok = __beginPgmNumber(dir_number, pgm_number);
 
   return is_ok;
 }
@@ -180,11 +180,11 @@ void RC6502Pgm::__parseToken(char *token, uint8_t i)
   }
 }
 
-bool RC6502Pgm::__beginPgmNumber(uint16_t pgm_number)
+bool RC6502Pgm::__beginPgmNumber(uint8_t dir_number, uint16_t pgm_number)
 {
   static char csv_name[] = CSV_NAME_FMT;
 
-  __updateCsvName(csv_name, pgm_number);
+  __updateCsvName(csv_name, dir_number, pgm_number);
 
   return __beginCsvName(csv_name);
 }
@@ -204,11 +204,14 @@ bool RC6502Pgm::__beginCsvName(const char *csv_name)
   return is_ok;
 }
 
-void RC6502Pgm::__updateCsvName(char *csv_name, uint16_t pgm_number)
+void RC6502Pgm::__updateCsvName(char *csv_name, uint8_t dir_number, uint16_t pgm_number)
 {
-  csv_name[3] = static_cast<char>(pgm_number / 100) + '0';
-  csv_name[4] = static_cast<char>((pgm_number % 100) / 10) + '0';
-  csv_name[5] = static_cast<char>(pgm_number % 10) + '0';
+  csv_name[0] = static_cast<char>(dir_number / 10) + '0';
+  csv_name[1] = static_cast<char>(dir_number % 10) + '0';
+
+  csv_name[6] = static_cast<char>(pgm_number / 100) + '0';
+  csv_name[7] = static_cast<char>((pgm_number % 100) / 10) + '0';
+  csv_name[8] = static_cast<char>(pgm_number % 10) + '0';
 }
 
 inline void RC6502Pgm::__printSpaces(size_t n)

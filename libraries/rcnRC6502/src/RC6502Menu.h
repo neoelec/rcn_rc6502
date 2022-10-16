@@ -21,6 +21,7 @@ public:
   void doCmdListPrograms(void);
   void doCmdLoadProgram(void);
   void doCmdPIOReset(void);
+  void doCmdSelectDirectory(void);
   void doCmdWarmReset(void);
   bool isDone(void);
 
@@ -43,6 +44,7 @@ private:
 
   bool done_;
   RC6502Pgm pgm_;
+  uint8_t dir_number_;
 };
 
 extern RC6502MenuClass RC6502Menu;

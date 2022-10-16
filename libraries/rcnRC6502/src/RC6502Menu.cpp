@@ -22,9 +22,10 @@ void RC6502MenuClass::enter(void)
   Serial.print(F("RCN: Entering to menu ..."));
 
   done_ = false;
+  dir_number_ = 0;
 
   sd_->mount();
-  pgm_.begin(sd_);
+//  pgm_.begin(sd_);
 
   menu_cmd_.ShowMenu();
   menu_cmd_.giveCmdPrompt();
@@ -72,7 +73,7 @@ void RC6502MenuClass::doCmdListPrograms(void)
 
   Serial.println();
   Serial.print(F("RCN: PAGE NUMBER [>=0]"));
-  if (!menu_cmd_.getStrValue(str_bm) || !str_bm.length())
+  if (!menu_cmd_.getStrValue(str_bm) || !str_bm.length())\
     goto __exit;
 
   page_number = str_bm.toInt();
@@ -107,12 +108,41 @@ void RC6502MenuClass::doCmdLoadProgram(void)
     Serial.println();
     Serial.print(F("Wrong Value "));
     Serial.print(pgm_number, DEC);
-    Serial.println(F(". It should be boot_mode  >= 0"));
+    Serial.println(F(". It should be pgm_number >= 0"));
     goto __exit;
   }
 
-  pgm_.begin(sd_, static_cast<uint16_t>(pgm_number));
+  pgm_.begin(sd_, dir_number_, static_cast<uint16_t>(pgm_number));
   __loadPgmFile();
+
+__exit:
+  menu_cmd_.giveCmdPrompt();
+}
+
+void RC6502MenuClass::doCmdSelectDirectory(void)
+{
+  String str_bm;
+  long dir_number;
+
+  Serial.println();
+  Serial.print(F("RCN: DIRECTORY NUMBER [99>= && >=0]"));
+  if (!menu_cmd_.getStrValue(str_bm) || !str_bm.length())
+    goto __exit;
+
+  dir_number = str_bm.toInt();
+  if (dir_number < 0 || dir_number > 99)
+  {
+    Serial.println();
+    Serial.print(F("Wrong Value "));
+    Serial.print(dir_number, DEC);
+    Serial.println(F(". It should be dir_number 99>= && >=0"));
+    goto __exit;
+  }
+
+  dir_number_ = static_cast<uint8_t>(dir_number);
+  Serial.println();
+  Serial.print(F("RCN: DIRECTORY - "));
+  Serial.println(dir_number_, DEC);
 
 __exit:
   menu_cmd_.giveCmdPrompt();
@@ -261,6 +291,7 @@ inline void RC6502MenuClass::__printSpaces(size_t n)
 void RC6502MenuClass::__initializeMenuCmd(void)
 {
   static tMenuCmdTxt prompt[] PROGMEM = "-";
+  static tMenuCmdTxt txt_s[] PROGMEM = "s - Select Directory";
   static tMenuCmdTxt txt_l[] PROGMEM = "l - List Programs";
   static tMenuCmdTxt txt_o[] PROGMEM = "o - Load Program";
   static tMenuCmdTxt txt_x[] PROGMEM = "x - Exit";
@@ -268,6 +299,8 @@ void RC6502MenuClass::__initializeMenuCmd(void)
   static tMenuCmdTxt txt_w[] PROGMEM = "w - Warm Reset";
   static tMenuCmdTxt txt__[] PROGMEM = "? - Help";
   static stMenuCmd menu_list[] = {
+      {txt_s, 's', []()
+       { RC6502Menu.doCmdSelectDirectory(); }},
       {txt_l, 'l', []()
        { RC6502Menu.doCmdListPrograms(); }},
       {txt_o, 'o', []()
@@ -303,7 +336,7 @@ void RC6502MenuClass::__listPrograms(uint16_t page_number, uint16_t pgm_per_page
   {
     uint16_t pgm_number = i + pgm_begin;
 
-    if (!pgm_tmp.begin(sd_, pgm_number))
+    if (!pgm_tmp.begin(sd_, dir_number_, pgm_number))
       break;
 
     n = Serial.print(pgm_number, DEC);
