@@ -78,7 +78,7 @@ void RC6502Pgm::printProgram(void)
 
   Serial.print(F("     F> "));
   n = Serial.print(pgm_file_);
-  __printSpaces(12 - n);
+  __printSpaces(sizeof(pgm_file_) - n);
 
   Serial.print(F(" L> "));
   n = Serial.print(load_address_, HEX);
